@@ -1,5 +1,5 @@
 # Seed
-a front-end framwork with mvc
+a front-end framework with mvc
 
 ## Changelog
 ### 2018.8.12
