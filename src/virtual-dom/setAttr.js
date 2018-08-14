@@ -1,16 +1,20 @@
-const setAttr = (node, key, value) => {
+import { isObject } from './util'
+
+export default function setAttr (node, key, value) {
   if (value === undefined) {
-    if (isClassName(key)) {
-      node.removeAttribute('class')
-    } else {
-      node.removeAttribute(key)
-    }
+    removeProperty(node, key)
   } else if (key === 'style') {
-    node.style.cssText = value
+    if (isObject(value)) {
+      for (let name in value) {
+        node.style[name] = value[name]
+      }
+    } else {
+      node.style.cssText = value
+    }
   } else if (key === 'value') {
-    var tagName = node.tagName || ''
-    tagName = tagName.toLowerCase()
-    if (tagName === 'input' || tagName === 'textarea') {
+    // 在 HTML 中，tagName 属性的返回值始终是大写的
+    var tagName = node.tagName
+    if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
       node.value = value
     } else {
       node.setAttribute(key, value)
@@ -22,16 +26,15 @@ const setAttr = (node, key, value) => {
       node.classList.add(className)
     })
   } else if (isEventProp(key)) {
-    // var events = EvStore(node)
-    // events[extractEventName(key)] = value
-    node.addEventListener(extractEventName(key), value.bind(this))
-    // console.log(node)
+    // 这里需要使用 node.onclick = func，而不使用 node.addEventListener('click', func)
+    // 因为使用后者会仍然保留旧元素的事件监听，这不是希望的，所以使用前者覆盖事件监听
+    node[key] = value
   } else {
     node.setAttribute(key, value)
   }
 }
 
-// 清空类名
+// 置空类名
 function emptyClass (node) {
   var arr = []
   for (var i = 0; i < node.classList.length; i++) {
@@ -42,16 +45,22 @@ function emptyClass (node) {
   })
 }
 
+// 属性是否为类
 function isClassName (name) {
-  return /^className$/.test(name)
+  return /^(className|class)$/.test(name)
 }
-
+// 属性是否为事件
 function isEventProp (name) {
-  return /^on/.test(name)
+  return /^on[A-Za-z]/.test(name)
 }
 
-function extractEventName (name) {
-  return name.slice(2).toLowerCase()
+// 移除属性
+function removeProperty (node, propName) {
+  if (!isEventProp(propName)) {
+    if (isClassName(propName)) node.removeAttribute('class')
+    else node.removeAttribute(propName)
+  } else {
+    // 置空事件
+    node[propName] = null
+  }
 }
-
-export default setAttr

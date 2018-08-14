@@ -34,7 +34,7 @@ export default class DD {
   _init(options: any) {
     let dd: DD = this
 
-    // 合并 构造函数的配置项 和 输入的配置项
+    // 合并 构造器(父组件)的配置项 和 输入的配置项
     var sub: any = this.constructor
     dd.$options = mergeOptions(sub.options, options)
 

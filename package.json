@@ -1,7 +1,7 @@
 {
   "name": "Seed",
   "description": "a front-end framework with mvc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Hanger <2313303800@qq.com>",
   "license": "MIT",
   "scripts": {

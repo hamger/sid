@@ -51,7 +51,7 @@ export default {
       return this.$options.render.call(this, this.$h.bind(this))
     }
 
-    // 调用组件的 render 函数，创建虚拟节点
+    // 调用组件的 render 函数，创建虚拟模板
     DD.prototype.$createVNode = function (prop) {
       let template = null
       this.$initProp(prop)
@@ -76,8 +76,6 @@ export default {
       if (!this.$vDomTree) {
         this.$el = create(vDomTree)
       } else {
-        console.log(this.$vDomTree)
-        console.log(vDomTree)
         this.$el = patch(this.$el, diff(this.$vDomTree, vDomTree))
       }
       this.$initDOMBind(this.$el, newTemplate)

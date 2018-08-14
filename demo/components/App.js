@@ -4,19 +4,17 @@ import NoTask from './NoTask'
 import Title from './Title'
 import TodoInput from './TodoInput'
 
-let taskId = 0
-
 export default new Seed({
   render (h) {
     return (
       <div className="todo-wrap">
-        <Title title={this.title} />
+        <Title title={this.title + ' with ' + this.taskCount} />
         <div className="list-wrap">
           {this.todoList.length === 0 ? (
             <NoTask noTaskInfo={this.noTaskInfo} />
           ) : (
-            this.todoList.map((item, index) => (
-              <TodoTask key={index} task={item} />
+            this.todoList.map((item) => (
+              <TodoTask task={item} />
             ))
           )}
         </div>
@@ -33,13 +31,19 @@ export default new Seed({
         }
       }
     })
+    let taskId = 0
     this.$on('addTodo', name => {
-      this.todoList.push({
+      this.todoList.unshift({
         id: taskId++,
         complete: false,
         taskName: name
       })
     })
+  },
+  computed: {
+    taskCount: function () {
+      return this.todoList.length
+    }
   },
   data () {
     return {

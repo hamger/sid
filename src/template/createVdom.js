@@ -9,7 +9,6 @@ export default function createVdom (ctx, tag, properties, ...children) {
     node.properties = properties
     node.children = children
     node.parent = ctx
-    node.key = properties.key
     node.isComponent = true
     if (typeof tag === 'function') {
       node.componentClass = tag

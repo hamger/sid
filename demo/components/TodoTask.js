@@ -1,5 +1,6 @@
 import Seed from '../../src'
 
+// <div key={this.task.id} className="todo-item">
 let TodoTask = Seed.extend({
   render (h) {
     return (

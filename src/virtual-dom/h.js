@@ -1,24 +1,5 @@
-import _ from './util'
-
-class VNode {
-  constructor (tagName, properties, children) {
-    this.tagName = tagName
-    this.properties = properties || {}
-    this.children = children || []
-    this.key = properties && properties.key
-
-    // 记录该节点下有多少个子节点
-    let count = 0
-    this.children.forEach(child => {
-      // 如果子节点是 VNode 实例，记录它拥有的子节点数目
-      if (child instanceof VNode) count += child.count
-      // child 本身是一个子节点，所以还需要 +1
-      count++
-    })
-    this.count = count
-  }
-}
-export { VNode }
+import { isArray, isPrimitive } from './util'
+import VNode from './vnode'
 
 function h (tagName, properties, children) {
   let childNodes = [] // 用于存放所有的子节点
@@ -26,13 +7,16 @@ function h (tagName, properties, children) {
   let props, childs
 
   // 如果 properties 是数组，则默认是 children
-  if (_.isArray(properties)) {
+  if (isArray(properties)) {
     props = {}
     childs = properties
   } else {
     props = properties || {}
     childs = children || []
   }
+
+  if (tag) tag = normalizeTag(tag)
+  props = normalizeProps(props)
 
   if (childs.length > 0) {
     addChild(childs, childNodes, tag, props)
@@ -42,17 +26,39 @@ function h (tagName, properties, children) {
 }
 
 function addChild (c, childNodes, tag, props) {
-  if (_.isPrimitive(c)) {
+  if (isPrimitive(c)) {
     childNodes.push(String(c))
   } else if (c instanceof VNode) {
     childNodes.push(c)
-  } else if (_.isArray(c)) {
+  } else if (isArray(c)) {
     for (var i = 0; i < c.length; i++) {
       addChild(c[i], childNodes, tag, props)
     }
   } else {
     throw Error(`${c} is a unexpected virtual dom node`)
   }
+}
+
+// 规范化传入的标签名
+function normalizeTag (tag) {
+  return delBlank(tag.toUpperCase())
+}
+
+// 规范化传入的属性
+function normalizeProps (props) {
+  for (var key in props) {
+    var value = props[key]
+    if (isPrimitive(value)) {
+      props[key] = delBlank(String(value))
+    }
+  }
+  return props
+}
+
+// 去除字符串多余空格，并将内部的多个空格转化为一个空格
+function delBlank (str) {
+  var regEx = /\s+/g
+  return str.trim().replace(regEx, ' ')
 }
 
 export default h
