@@ -1,4 +1,4 @@
-import Seed from '../../src'
+import Seed from '@'
 
 // <div key={this.task.id} className="todo-item">
 let TodoTask = Seed.extend({

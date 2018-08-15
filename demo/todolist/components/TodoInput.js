@@ -1,4 +1,4 @@
-import Seed from '../../src'
+import Seed from '@'
 // let id = 0
 export default Seed.extend({
   render (h) {

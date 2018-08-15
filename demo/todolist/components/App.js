@@ -1,4 +1,4 @@
-import Seed from '../../src'
+import Seed from '@'
 import TodoTask from './TodoTask'
 import NoTask from './NoTask'
 import Title from './Title'

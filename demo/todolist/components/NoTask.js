@@ -1,4 +1,4 @@
-import Seed from '../../src/index'
+import Seed from '@'
 
 let NoTask = Seed.extend({
   render (h) {
