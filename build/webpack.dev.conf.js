@@ -51,10 +51,10 @@ var webpackConfig = {
   devServer: {
     clientLogLevel: 'warning',
     hot: true,
-    compress: true,
+    compress: true, 
     historyApiFallback: {
-      index: 'todolistasfasdf.html',
-      rewrites: [{ from: /^\/todolist/, to: 'todolist.html' }]
+      // rewrites: [{ from: /^\/todolist/, to: path.posix.join('/', 'todolist/') }]
+      rewrites: [{ from: /^\/todolist/, to: '/todolist/' }]
     }
   },
   plugins: [new webpack.HotModuleReplacementPlugin()]
@@ -66,7 +66,7 @@ var pages = Object.keys(htmls)
 pages.forEach(filename => {
   webpackConfig.plugins.push(
     new HtmlWebpackPlugin({
-      filename: `${filename}.html`,
+      filename: `${filename}/index.html`,
       template: htmls[filename],
       inject: true,
       chunks: [filename]

@@ -5,9 +5,9 @@ import page2 from './page2'
 
 var router = new Router({
   id: 'router-view',
-  // mode: 'history',
-  mode: 'hash',
-  base: '/todolist.html',
+  mode: 'history',
+  // mode: 'hash',
+  base: '/todolist',
   routes: [
     {
       path: '/page1',
@@ -45,7 +45,5 @@ var router = new Router({
     }
   ]
 })
-
-// console.log(router)
 
 export default router
