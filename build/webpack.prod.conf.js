@@ -1,35 +1,66 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
-const AnnotatePlugin = require('annotate-webpack-plugin')
+const utils = require('./utils')
+const resolve = utils.resolve
 
-module.exports = {
-  entry: './src/index',
+var webpackConfig = {
+  entry: utils.getEntry('demo/**/index.js', /^(util)$/),
   output: {
-    filename: 'data-dirver.js',
-    path: path.resolve(__dirname, '../dist')
+    path: path.resolve(__dirname, '../dist'),
+    filename: '[name]/[name].js',
+    publicPath: '../'
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, '../src')
+    }
   },
   module: {
     rules: [
       {
         test: /.js$/,
         loader: 'babel-loader',
-        include: [path.resolve(__dirname, '../src')]
+        include: [resolve('src'), resolve('demo'), resolve('router')]
       },
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
-        include: [path.resolve(__dirname, '../src')]
+        include: [resolve('src')]
       },
+      {
+        test: /.s[c|a]ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+        include: [resolve('demo')]
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: path.join('assets', '[name].[ext]')
+        }
+      }
     ]
   },
   plugins: [
-    new AnnotatePlugin({
-      author: 'hanger',
-      create: '2018/7/4'
-    }),
-    new UglifyJsPlugin(),
+    new UglifyJsPlugin()
   ]
 }
+
+// 在不同的页面中插入对应的js文件
+var htmls = utils.getEntry('demo/**/index.html')
+var pages = Object.keys(htmls)
+pages.forEach(filename => {
+  webpackConfig.plugins.push(
+    new HtmlWebpackPlugin({
+      filename: `${filename}/${filename}.html`,
+      template: htmls[filename],
+      inject: true,
+      chunks: [filename]
+    })
+  )
+})
+
+module.exports = webpackConfig

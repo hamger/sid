@@ -15,5 +15,4 @@ var title = Seed.extend({
   }
 })
 
-console.log(title)
 export default title

@@ -53,7 +53,7 @@ function getLocation (base = '') {
   return (path || '/') + window.location.search + window.location.hash
 }
 
-function changeUrl (base, path, replace) {
+function changeUrl (base = '', path, replace) {
   if (replace) {
     window.history.replaceState({}, '', (base + path).replace(/\/\//g, '/'))
   } else {

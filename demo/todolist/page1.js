@@ -1,15 +1,16 @@
 import Seed from '@'
-
+import Title from './components/Title'
 export default Seed.extend({
   render (h) {
     return (
-      <p>{this.title}</p>
+      <div>
+        <Title title={this.title} />
+      </div>
     )
   },
-  props: {
-    title: {
-      type: String,
-      default: 'this is page1'
+  data: function () {
+    return {
+      title: 'this is page1'
     }
   }
 })

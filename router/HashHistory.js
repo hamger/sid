@@ -4,6 +4,7 @@ export class HashHistory extends Base {
   constructor (router) {
     super(router)
     this.ensureSlash()
+    // 当 hash 改变的时候，触发渲染
     window.addEventListener('hashchange', () => {
       this.transitionTo(this.getCurrentLocation())
     })
@@ -11,7 +12,6 @@ export class HashHistory extends Base {
 
   push (location) {
     const targetRoute = match(location, this.router.routes)
-
     this.transitionTo(targetRoute, () => {
       changeUrl(this.current.fullPath.substring(1))
     })
@@ -30,6 +30,7 @@ export class HashHistory extends Base {
     if (path.charAt(0) === '/') {
       return true
     }
+    // 如果 path 不是以 / 开头的，改变url
     changeUrl(path)
     return false
   }

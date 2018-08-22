@@ -9,7 +9,7 @@
     "start": "npm run dev",
     "build": "webpack --config build/webpack.prod.conf.js"
   },
-  "main": "dist/seed.js",
+  "main": "package/seed.js",
   "keywords": [
     "hanger",
     "framwork",

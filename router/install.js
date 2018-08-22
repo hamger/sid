@@ -31,7 +31,7 @@ export default function install (DD, router) {
 
   Object.defineProperty(DD.prototype, '$router', {
     get () {
-      return router.history.router
+      return router.history
     }
   })
 

@@ -18,11 +18,22 @@ var app = new Seed({
           )}
         </div>
         <TodoInput placeholder={'记点什么'} />
-        <a href="#/page1">page1</a>
-        <a href="#/page2">page2</a>
+        <a onclick={this.jump.bind(this, '/page1')}>page1</a>
+        <a
+          onclick={() => {
+            this.$router.push({ path: '/page2' })
+          }}
+        >
+          page2
+        </a>
         <View />
       </div>
     )
+  },
+  methods: {
+    jump: function (url) {
+      this.$router.push({ path: url })
+    }
   },
   created () {
     this.$on('removeById', id => {
@@ -69,5 +80,4 @@ var app = new Seed({
   }
 })
 
-console.log(app)
 export default app
