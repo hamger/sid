@@ -2,7 +2,7 @@ import Router from '../../router'
 var router = new Router({
   id: 'router-view',
   mode: 'history',
-  base: '/example/history',
+  base: '/',
   routes: [
     {
       path: '/',

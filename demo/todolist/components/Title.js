@@ -1,7 +1,8 @@
 import Seed from '@'
 
-export default Seed.extend({
+var title = Seed.extend({
   render (h) {
+    console.log(this)
     return (
       <p className='title'>{this.title}</p>
     )
@@ -13,3 +14,6 @@ export default Seed.extend({
     }
   }
 })
+
+console.log(title)
+export default title

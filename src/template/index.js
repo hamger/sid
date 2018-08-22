@@ -5,9 +5,11 @@ import { diff, patch, create } from '../virtual-dom'
 export default {
   install (DD) {
     DD.$mount = function (el, dd) {
+      // window.onload = function () {
       let template = dd.$createVNode(dd.propData)
       dd.$patch(template)
       el.appendChild(dd.$el)
+      // }
     }
 
     // 将 jsx 转化为虚拟模板，此时自定义标签还未解析
@@ -59,10 +61,9 @@ export default {
       this.$watch(
         () => {
           template = this.render.call(this)
-          // template: VNode{tagName: "div", props: {…}, children: Array(3), key: null, _count: 5}
           return template
         },
-        (newTemplate) => {
+        newTemplate => {
           // 依赖变更后重绘 dom 树
           this.$patch(newTemplate)
         }

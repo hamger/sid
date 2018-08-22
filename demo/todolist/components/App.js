@@ -3,8 +3,9 @@ import TodoTask from './TodoTask'
 import NoTask from './NoTask'
 import Title from './Title'
 import TodoInput from './TodoInput'
+import View from '../../../router/View.js'
 
-export default new Seed({
+var app = new Seed({
   render (h) {
     return (
       <div className="todo-wrap">
@@ -13,12 +14,13 @@ export default new Seed({
           {this.todoList.length === 0 ? (
             <NoTask noTaskInfo={this.noTaskInfo} />
           ) : (
-            this.todoList.map((item) => (
-              <TodoTask task={item} />
-            ))
+            this.todoList.map(item => <TodoTask task={item} />)
           )}
         </div>
         <TodoInput placeholder={'记点什么'} />
+        <a href="#/page1">page1</a>
+        <a href="#/page2">page2</a>
+        <View />
       </div>
     )
   },
@@ -66,3 +68,6 @@ export default new Seed({
     }
   }
 })
+
+console.log(app)
+export default app

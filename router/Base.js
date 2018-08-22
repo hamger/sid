@@ -4,7 +4,6 @@ export class Base {
     this.current = {
       path: '/',
       query: {},
-      params: {},
       name: '',
       fullPath: '/',
       route: {}
@@ -40,7 +39,7 @@ export class Base {
       this.router.beforeEach,
       this.current.route.beforeLeave,
       route.beforeEnter,
-      route.afterEnter
+      this.router.afterEach
     )
 
     // 通过 step 调度执行
@@ -59,11 +58,13 @@ export class Base {
   }
 }
 
+// 获取完整的路径
 function getFullPath ({ path, query = {}, hash = '' }, _stringifyQuery) {
   const stringify = _stringifyQuery || stringifyQuery
   return (path || '/') + stringify(query) + hash
 }
 
+// 获取匹配的路径信息
 export function match (path, routeMap) {
   let match = {}
   if (typeof path === 'string' || path.name === undefined) {
@@ -87,6 +88,7 @@ export function match (path, routeMap) {
   return match
 }
 
+// 获取参数
 export function getQuery () {
   const hash = location.hash
   const queryStr =
@@ -100,6 +102,7 @@ export function getQuery () {
   return query
 }
 
+// 将参数拼接成链接地址
 function stringifyQuery (obj) {
   const res = obj ?
     Object.keys(obj)

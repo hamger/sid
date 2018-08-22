@@ -1,4 +1,4 @@
-import { empty, noop, isPlainObject } from './util'
+import { empty, noop } from './util'
 import { LIFECYCLE_HOOK } from '../instance/lifecycle'
 
 export function mergeOptions(parent: any = {}, child: any = {}) {

@@ -74,16 +74,21 @@ export default class DD {
 
   // 用于取消特定的属性监听
   // 比如表单元素的 value 值，发生变化时是不需要引发视图变化的
-  $cancelWatch(getter?: string | Function) {
-    pushTarget(null)
-    let value = null
-    if (typeof getter === 'string') {
-      value = getter.split('.').reduce((res, name) => res[name], this)
-    } else if (typeof getter === 'function') {
-      value = getter.call(this)
+  $cancelWatch(watch?: Watcher) {
+    if (watch) {
+      let i = watch.dep.length
+      while (i--) {
+        const dep = watch.dep[i]
+        if (!watch.newDepId.has(dep.depId)) {
+          dep.removeSub(watch)
+        }
+      }
+    } else {
+      // 取消所有的监听
+      while (this._watch.length) {
+        this._watch.shift().teardown()
+      }
     }
-    popTarget()
-    return value
   }
 
   // 暴露销毁当前实例的方法
