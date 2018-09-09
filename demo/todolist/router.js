@@ -7,7 +7,7 @@ import view2 from './view2'
 
 var router = new Router({
   id: 'router-view',
-  mode: 'history',
+  // mode: 'history',
   // mode: 'hash',
   base: '/todolist',
   routes: [

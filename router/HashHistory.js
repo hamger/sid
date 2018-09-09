@@ -4,10 +4,18 @@ export class HashHistory extends Base {
   constructor (router) {
     super(router)
     this.ensureSlash()
-    // 当 hash 改变的时候，触发渲染
+    // 当 hash 改变的时候，改变当前路由信息
     window.addEventListener('hashchange', () => {
       this.transitionTo(this.getCurrentLocation())
     })
+  }
+
+  ensureSlash () {
+    const path = this.getCurrentLocation()
+    if (path.charAt(0) === '/') return true
+    // 如果 path 不是以 / 开头的，表示 hash 不存在，加上 hash
+    changeUrl(path)
+    return false
   }
 
   push (location) {
@@ -19,20 +27,9 @@ export class HashHistory extends Base {
 
   replaceState (location) {
     const targetRoute = match(location, this.router.routes)
-
     this.transitionTo(targetRoute, () => {
       changeUrl(this.current.fullPath.substring(1), true)
     })
-  }
-
-  ensureSlash () {
-    const path = this.getCurrentLocation()
-    if (path.charAt(0) === '/') {
-      return true
-    }
-    // 如果 path 不是以 / 开头的，改变url
-    changeUrl(path)
-    return false
   }
 
   // 获取 # 号后边的字符串

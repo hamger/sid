@@ -18,8 +18,8 @@ var app = new Seed({
           )}
         </div>
         <TodoInput placeholder={'记点什么'} />
-        <a onclick={this.jump.bind(this, '/page1')}>page1</a>
-        <a
+        <a style="cursor:pointer;" onclick={this.jump.bind(this, '/page1')}>page1</a>
+        <a style="cursor:pointer;"
           onclick={() => {
             this.$router.push({ path: '/page2' })
           }}
@@ -62,18 +62,6 @@ var app = new Seed({
     return {
       title: 'TodoList',
       todoList: [],
-      // todoList: [
-      //   {
-      //     complete: false,
-      //     id: 2,
-      //     taskName: 'sdfgsg'
-      //   },
-      //   {
-      //     complete: false,
-      //     id: 3,
-      //     taskName: 'zxvc'
-      //   }
-      // ],
       inputValue: '',
       noTaskInfo: '暂无 TodoList'
     }

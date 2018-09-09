@@ -22,12 +22,12 @@ class Router {
     this.history =
       this.mode === 'history' ? new HTML5History(this) : new HashHistory(this)
 
-    // 支持通过 this.$route 访问 this.history.current
-    Object.defineProperty(this, '$route', {
-      get: () => {
-        return this.history.current
-      }
-    })
+    // // 支持通过 this.$route 访问 this.history.current
+    // Object.defineProperty(this, '$route', {
+    //   get: () => {
+    //     return this.history.current
+    //   }
+    // })
 
     this.init()
   }

@@ -16,7 +16,6 @@ export class HTML5History extends Base {
    */
   push (location) {
     const targetRoute = match(location, this.router.routes)
-
     this.transitionTo(targetRoute, () => {
       changeUrl(this.router.base, this.current.fullPath)
     })
@@ -30,7 +29,6 @@ export class HTML5History extends Base {
    */
   replaceState (location) {
     const targetRoute = match(location, this.router.routes)
-
     this.transitionTo(targetRoute, () => {
       changeUrl(this.router.base, this.current.fullPath, true)
     })

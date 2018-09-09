@@ -18,7 +18,7 @@ export class Base {
   transitionTo (target, cb) {
     // 通过对比传入的 routes 获取匹配到的 targetRoute 对象
     const targetRoute = match(target, this.router.routes)
-    this.confirmTransition(targetRoute, () => {
+    this.transitionHook(targetRoute, () => {
       this.current.route = targetRoute
       this.current.name = targetRoute.name
       this.current.path = targetRoute.path
@@ -29,11 +29,11 @@ export class Base {
   }
 
   /**
-   * 确认跳转
+   * 执行钩子函数
    * @param route
    * @param cb
    */
-  confirmTransition (route, cb) {
+  transitionHook (route, cb) {
     // 钩子函数执行队列
     let queue = [].concat(
       this.router.beforeEach,
@@ -59,14 +59,39 @@ export class Base {
 }
 
 // 获取完整的路径
-function getFullPath ({ path, query = {}, hash = '' }, _stringifyQuery) {
-  const stringify = _stringifyQuery || stringifyQuery
-  return (path || '/') + stringify(query) + hash
+function getFullPath ({ path, query = {}, hash = '' }) {
+  return (path || '/') + stringifyQuery(query) + hash
+}
+
+// 将参数拼接成链接地址
+function stringifyQuery (obj) {
+  const res = obj ?
+    Object.keys(obj)
+      .map(key => {
+        const val = obj[key]
+        if (val === undefined) return ''
+        if (val === null) return key
+        if (Array.isArray(val)) {
+          const result = []
+          val.forEach(val2 => {
+            if (val2 === undefined) return
+            if (val2 === null) result.push(key)
+            else result.push(key + '=' + val2)
+          })
+          return result.join('&')
+        }
+        return key + '=' + val
+      })
+      .filter(x => x.length > 0)
+      .join('&') :
+    null
+  return res ? `?${res}` : ''
 }
 
 // 获取匹配的路径信息
 export function match (path, routeMap) {
   let match = {}
+  // path 为字符串 或者 path.name 未设置，使用 path.path 或者 path 来识别
   if (typeof path === 'string' || path.name === undefined) {
     for (let route of routeMap) {
       if (route.path === path || route.path === path.path) {
@@ -78,9 +103,7 @@ export function match (path, routeMap) {
     for (let route of routeMap) {
       if (route.name === path.name) {
         match = route
-        if (path.query) {
-          match.query = path.query
-        }
+        if (path.query) match.query = path.query
         break
       }
     }
@@ -100,42 +123,4 @@ export function getQuery () {
     query[qArray[0]] = qArray[1]
   })
   return query
-}
-
-// 将参数拼接成链接地址
-function stringifyQuery (obj) {
-  const res = obj ?
-    Object.keys(obj)
-      .map(key => {
-        const val = obj[key]
-
-        if (val === undefined) {
-          return ''
-        }
-
-        if (val === null) {
-          return key
-        }
-
-        if (Array.isArray(val)) {
-          const result = []
-          val.forEach(val2 => {
-            if (val2 === undefined) {
-              return
-            }
-            if (val2 === null) {
-              result.push(key)
-            } else {
-              result.push(key + '=' + val2)
-            }
-          })
-          return result.join('&')
-        }
-
-        return key + '=' + val
-      })
-      .filter(x => x.length > 0)
-      .join('&') :
-    null
-  return res ? `?${res}` : ''
 }
