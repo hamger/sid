@@ -44,17 +44,9 @@ class Router {
     this.history.go(n)
   }
 
-  // routerRander () {
-  //   document.getElementById(
-  //     this.container
-  //   ).innerHTML = this.history.current.route.component
-  // }
-
   init () {
     const history = this.history
     observe.call(this, history.current)
-    // 通过改变 route 来渲染页面
-    // new Watcher(history.current, 'route', this.routerRander.bind(this))
     // 路由转化到当前路径
     history.transitionTo(history.getCurrentLocation())
   }

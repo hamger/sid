@@ -2,6 +2,8 @@
 import Router from '../../router'
 import page1 from './page1'
 import page2 from './page2'
+import view1 from './view1'
+import view2 from './view2'
 
 var router = new Router({
   id: 'router-view',
@@ -42,6 +44,16 @@ var router = new Router({
         console.log('start leave page2')
         next()
       }
+    },
+    {
+      path: '/page2/view1',
+      name: 'view1',
+      component: view1
+    },
+    {
+      path: '/page2/view2',
+      name: 'view2',
+      component: view2
     }
   ]
 })

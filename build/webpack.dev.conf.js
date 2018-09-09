@@ -55,6 +55,13 @@ var webpackConfig = {
     historyApiFallback: {
       // rewrites: [{ from: /^\/todolist/, to: path.posix.join('/', 'todolist/') }]
       rewrites: [{ from: /^\/todolist/, to: '/todolist/' }]
+    },
+    stats: {
+      hash: false,
+      assets: false,
+      version: false,
+      modules: false,
+      timings: false
     }
   },
   plugins: [new webpack.HotModuleReplacementPlugin()]
