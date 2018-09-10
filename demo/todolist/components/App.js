@@ -3,7 +3,7 @@ import TodoTask from './TodoTask'
 import NoTask from './NoTask'
 import Title from './Title'
 import TodoInput from './TodoInput'
-import View from '../../../router/View.js'
+import View from '#/View.js'
 
 var app = new Seed({
   render (h) {

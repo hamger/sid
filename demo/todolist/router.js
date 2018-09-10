@@ -1,12 +1,11 @@
 
-import Router from '../../router'
+import Router from '#'
 import page1 from './page1'
 import page2 from './page2'
 import view1 from './view1'
 import view2 from './view2'
 
 var router = new Router({
-  id: 'router-view',
   // mode: 'history',
   // mode: 'hash',
   base: '/todolist',

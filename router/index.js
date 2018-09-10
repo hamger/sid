@@ -9,7 +9,7 @@ class Router {
   constructor (options) {
     this.base = options.base
     this.routes = options.routes
-    this.container = options.id
+    this.id = options.id
 
     // 在 IE9 中自动降级为 hash 模式
     const fallback =
