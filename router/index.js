@@ -9,7 +9,6 @@ class Router {
   constructor (options) {
     this.base = options.base
     this.routes = options.routes
-    this.id = options.id
 
     // 在 IE9 中自动降级为 hash 模式
     const fallback =
@@ -21,13 +20,6 @@ class Router {
 
     this.history =
       this.mode === 'history' ? new HTML5History(this) : new HashHistory(this)
-
-    // // 支持通过 this.$route 访问 this.history.current
-    // Object.defineProperty(this, '$route', {
-    //   get: () => {
-    //     return this.history.current
-    //   }
-    // })
 
     this.init()
   }

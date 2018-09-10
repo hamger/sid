@@ -2,9 +2,8 @@ import Seed from '@'
 
 export default Seed.extend({
   props: {
-    vid: {
-      type: String,
-      default: 'default'
+    name: {
+      type: String
     }
   },
   render (h) {
