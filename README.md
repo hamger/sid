@@ -1,5 +1,5 @@
 # Seed
-a front-end framework with mvc
+a simple front-end framework with mvc
 
 ## Usage
 ```js
