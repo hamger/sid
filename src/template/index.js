@@ -78,31 +78,29 @@ export default {
     // 将虚拟模板树应用到真实的 dom
     DD.prototype.$patch = function (newVTmpTree) {
       // 将虚拟模板树转化为虚拟dom树，此时自定义标签被解析为html标签
-      let vDomTree = getVDomTree(newVTmpTree, this.$vTmpTree)
+      let vDomTree = getVDomTree(newVTmpTree)
       if (!this.$vDomTree) {
         this.$el = create(vDomTree)
       } else {
         var patches = diff(this.$vDomTree, vDomTree)
         this.$el = patch(this.$el, patches)
       }
-      // 保存组件的虚拟模板树，作为下次 $patch 中的旧虚拟模板树
-      this.$vTmpTree = newVTmpTree
       // 保存组件的虚拟dom树，作为下次 $patch 中的旧虚拟dom树
       this.$vDomTree = vDomTree
       this.$initDOMBind(this.$el, newVTmpTree)
     }
 
     // 为某一组件下的所有子组件上设置 $el 属性，表示其对应的真实 dom，在执行 patch 方法时需要用到
-    DD.prototype.$initDOMBind = function (rootDom, vTemplate) {
-      if (!vTemplate.children || vTemplate.children.length === 0) return
-      vTemplate.children.forEach((item, i) => {
-        if (item.isComponent) {
+    DD.prototype.$initDOMBind = function (rootDom, vTmpTree) {
+      if (!vTmpTree.children || vTmpTree.children.length === 0) return
+      vTmpTree.children.forEach((vTmpNode, i) => {
+        if (vTmpNode._constructor) {
           // 为子组件上加一个 $el 属性，表示其对应的真实 dom
-          item.component.$el = rootDom.childNodes[i]
+          vTmpNode.component.$el = rootDom.childNodes[i]
           // 递归遍历子组件的子代
-          this.$initDOMBind(rootDom.childNodes[i], item.component.$vTmpTree)
+          this.$initDOMBind(rootDom.childNodes[i], vTmpNode.component.$vTmpTree)
         } else {
-          this.$initDOMBind(rootDom.childNodes[i], item)
+          this.$initDOMBind(rootDom.childNodes[i], vTmpNode)
         }
       })
     }
