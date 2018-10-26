@@ -1,24 +1,21 @@
-import createVdom from './createVdom'
-import getTree from './getTree'
+import getVTmpNode from './getVTmpNode'
+import getVDomTree from './getVDomTree'
 import { diff, patch, create } from '../virtual-dom'
 
 export default {
   install (DD) {
     DD.$mount = function (el, dd) {
-      let template = dd.$createVNode(dd.propData)
+      // 获取虚拟模板树
+      let template = dd.$getVTmpTree()
+      // 获得虚拟dom树，并转化为真实 dom 元素挂载在 $el 属性
       dd.$patch(template)
       el.appendChild(dd.$el)
-    }
-
-    // 将 jsx 转化为虚拟模板，此时自定义标签还未解析
-    DD.prototype.$h = function (tag, properties, ...children) {
-      return createVdom(this, tag, properties, ...children)
     }
 
     // 在实例作用域下执行实例的 render 函数
     DD.prototype.render = function () {
       /**
-       * 执行一次render函数，内部多次执行 $h
+       * 这里的 h 参数就是 this.$h.bind(this)
        * render (h) {
        *  return ()
        *    <div className="todo-wrap">
@@ -42,56 +39,68 @@ export default {
        *    ])
        *  )
        * }
+       * 所以执行一次 render 函数，内部多次执行 $h()，即 getVTmpNode()
        * 因此最后返回的结果是一个表示 dom 结构的对象（含组件）
        * {tagName: "div", properties: {…}, children: Array(3)}
-       * 此时的对象中依然存在自定义的标签，也就是 tanName 值是 Sub（表示一个构造函数）的对象，姑且称之为虚拟模板，
-       * 虚拟模板无法被转化为真实的dom树，因此我们需要把虚拟模板中的自定义标签转化为html支持的标签，
-       * 这个转化逻辑在 getTree 中完成，原理就是用 Sub 的实例替换自定义标签
+       * 此时的对象中依然存在自定义的标签，也就是 tanName 值是 Sub（一个构造器对象），姑且将这样的对象称之为虚拟模板树，
+       * 虚拟模板树无法被转化为真实的 dom 树，因此我们需要把虚拟模板树中的自定义标签转化为html支持的标签，
+       * 这个转化逻辑在 getVDomTree 中完成，原理就是递归实例化 Sub 得到虚拟 dom 树，
+       * 虚拟 dom 树可以被 create 函数转化为真实的 dom 树
        */
       return this.$options.render.call(this, this.$h.bind(this))
     }
 
-    // 调用组件的 render 函数，创建虚拟模板
-    DD.prototype.$createVNode = function (prop) {
+    // 将 jsx 转化为虚拟模板树，此时自定义标签还未解析
+    DD.prototype.$h = function (tag, properties, ...children) {
+      // 将父组价传进去
+      var parent = this
+      return getVTmpNode(parent, tag, properties, ...children)
+    }
+
+    // 获取虚拟模板树，并对其进行监听
+    DD.prototype.$getVTmpTree = function (prop) {
       let template = null
       this.$initProp(prop)
-      // 建一个 watcher，观察对属性的操作
+      // 建一个 watcher，观察对虚拟模板树的操作
       this.$watch(
         () => {
           template = this.render.call(this)
           return template
         },
-        newTemplate => {
+        newVTmpTree => {
           // 依赖变更后重绘 dom 树
-          this.$patch(newTemplate)
+          this.$patch(newVTmpTree)
         }
       )
       return template
     }
 
-    DD.prototype.$patch = function (newTemplate) {
-      // 将虚拟模板转化为虚拟dom树，此时自定义标签被解析
-      let vDomTree = getTree(newTemplate, this.$template)
+    // 将虚拟模板树应用到真实的 dom
+    DD.prototype.$patch = function (newVTmpTree) {
+      // 将虚拟模板树转化为虚拟dom树，此时自定义标签被解析为html标签
+      let vDomTree = getVDomTree(newVTmpTree, this.$vTmpTree)
       if (!this.$vDomTree) {
         this.$el = create(vDomTree)
       } else {
-        this.$el = patch(this.$el, diff(this.$vDomTree, vDomTree))
+        var patches = diff(this.$vDomTree, vDomTree)
+        this.$el = patch(this.$el, patches)
       }
-      this.$initDOMBind(this.$el, newTemplate)
-      // 将有 $el 信息的虚拟模板保存在实例的 $template
-      this.$template = newTemplate
+      this.$initDOMBind(this.$el, newVTmpTree)
+      // 保存组件的虚拟模板树，作为下次 $patch 中的旧虚拟模板树
+      this.$vTmpTree = newVTmpTree
+      // 保存组件的虚拟dom树，作为下次 $patch 中的旧虚拟dom树
       this.$vDomTree = vDomTree
     }
 
-    // 由于组件的更新需要一个 $el ，所以 $initDOMBind 在每次 $patch 之后都需要调用
-    // 父组件的状态改变时，父组件的 $el 是不变的，只需要重新获取子元素的 $el
-    DD.prototype.$initDOMBind = function (rootDom, vNodeTemplate) {
-      if (!vNodeTemplate.children || vNodeTemplate.children.length === 0) return
-      vNodeTemplate.children.forEach((item, i) => {
+    // 为某一组件下的所有子组件上设置 $el 属性，表示其对应的真实 dom，在执行 patch 方法时需要用到
+    DD.prototype.$initDOMBind = function (rootDom, vTemplate) {
+      if (!vTemplate.children || vTemplate.children.length === 0) return
+      vTemplate.children.forEach((item, i) => {
         if (item.isComponent) {
-          // 在组件上加一个 $el 属性，表示组件的父元素
+          // 为子组件上加一个 $el 属性，表示其对应的真实 dom
           item.component.$el = rootDom.childNodes[i]
-          this.$initDOMBind(rootDom.childNodes[i], item.component.$template)
+          // 递归遍历子组件的子代
+          this.$initDOMBind(rootDom.childNodes[i], item.component.$vTmpTree)
         } else {
           this.$initDOMBind(rootDom.childNodes[i], item)
         }

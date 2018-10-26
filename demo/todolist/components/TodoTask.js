@@ -1,10 +1,10 @@
 import Seed from '@'
 
-// <div key={this.task.id} className="todo-item">
+// <div className="todo-item">
 let TodoTask = Seed.extend({
   render (h) {
     return (
-      <div className="todo-item">
+      <div key={this.task.id} className="todo-item">
         <div className="col-1 row">
           <input
             type="checkbox"

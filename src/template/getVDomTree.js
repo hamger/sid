@@ -2,28 +2,31 @@ import { h } from '../virtual-dom'
 
 function createTree (template) {
   let tree = Object.assign(new h(), template)
+  // 当然组件的最外层便签必须是 html 标签且唯一
   if (template && template.children) {
-    tree.children = template.children.map(node => {
-      let tmp = node
-      if (node.isComponent) {
-        // 保存组件的内容
-        node.component = new node.componentClass({
-          parent: node.parent,
-          propData: node.properties
+    // 将子代从虚拟模板树转化为虚拟dom树
+    tree.children = template.children.map(vTmpNode => {
+      let tmp = vTmpNode
+      if (vTmpNode.isComponent) {
+        // 保存组件的内容（seed实例）在 component 属性
+        vTmpNode.component = new vTmpNode.componentClass({
+          parent: vTmpNode.parent,
+          propData: vTmpNode.properties
         })
-        // 将实例的内容存放在 tmp 中
-        tmp = node.component.$template = node.component.$createVNode(
-          node.properties
+        // 传入父组件中的属性（node.properties）
+        // 得到组件的虚拟模板树，保存在 vTmpNode.component.$vTmpTree
+        tmp = vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(
+          vTmpNode.properties
         )
         // 保存组件信息在 tmp 中，递归时需要用到
-        tmp.component = node.component
+        tmp.component = vTmpNode.component
       }
       // 如果组件存在子元素，递归将子模板转换为虚拟dom树
       if (tmp.children && tmp.children.length > 0) tmp = createTree(tmp)
 
-      if (node.isComponent) {
+      if (vTmpNode.isComponent) {
         // 保存老的虚拟dom树，调用 diff 函数时需要用到
-        node.component.$vDomTree = tmp
+        vTmpNode.component.$vDomTree = tmp
       }
       return tmp
     })
@@ -44,46 +47,49 @@ function getOldComponent (list = [], cid) {
   }
 }
 
-function changeTree (newTemplate, oldTemplate) {
-  let tree = Object.assign(new h(), newTemplate)
-  if (newTemplate && newTemplate.children) {
-    tree.children = newTemplate.children.map((node, index) => {
-      let treeNode = node
+function changeTree (newVTmpTree, oldVTmpTree) {
+  let tree = Object.assign(new h(), newVTmpTree)
+  if (newVTmpTree && newVTmpTree.children) {
+    tree.children = newVTmpTree.children.map((vTmpNode, index) => {
+      let treeNode = vTmpNode
       let isNewComponent = false
+
+      // 该节点是一个组件
       if (treeNode.isComponent) {
         // 查找依然存在的组件
-        node.component = getOldComponent(
-          oldTemplate.children,
+        vTmpNode.component = getOldComponent(
+          oldVTmpTree.children,
           treeNode.componentClass.cid
         )
-        if (!node.component) {
+        if (!vTmpNode.component) {
           // 如果没有旧组件，获取新组件
-          node.component = new node.componentClass({
-            parent: node.parent,
-            propData: node.properties
+          vTmpNode.component = new vTmpNode.componentClass({
+            parent: vTmpNode.parent,
+            propData: vTmpNode.properties
           })
-          // 保存新的虚拟模板
-          treeNode = node.component.$template = node.component.$createVNode(node.properties)
-          // treeNode = node.component.$template
-          treeNode.component = node.component
+          // 保存新的虚拟模板树
+          treeNode = vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(vTmpNode.properties)
+          // treeNode = vTmpNode.component.$vTmpTree
+          treeNode.component = vTmpNode.component
           // 标记为新的组件
           isNewComponent = true
         } else {
           // 如果是依然存在的组件，更新节点 porps
-          node.component.$initProp(node.properties)
+          vTmpNode.component.$initProp(vTmpNode.properties)
           // 直接引用旧组件的虚拟 dom 树
-          treeNode = node.component.$vDomTree
+          treeNode = vTmpNode.component.$vDomTree
           // 保存组件的实例
-          treeNode.component = node.component
+          treeNode.component = vTmpNode.component
         }
       }
 
+      // 该节点存在子节点
       if (treeNode.children && treeNode.children.length !== 0) {
         if (isNewComponent) {
           treeNode = createTree(treeNode)
         } else {
-          if (oldTemplate && oldTemplate.children) {
-            treeNode = changeTree(treeNode, oldTemplate.children[index])
+          if (oldVTmpTree && oldVTmpTree.children) {
+            treeNode = changeTree(treeNode, oldVTmpTree.children[index])
           } else {
             treeNode = createTree(treeNode)
           }
@@ -91,19 +97,19 @@ function changeTree (newTemplate, oldTemplate) {
       }
       if (isNewComponent) {
         // 保存新组件的虚拟 dom 树
-        node.component.$vDomTree = treeNode
+        vTmpNode.component.$vDomTree = treeNode
       }
 
       return treeNode
     })
     // 注销在老模板中没有被复用的组件，释放内存
-    if (oldTemplate && oldTemplate.children.length !== 0) {
-      for (let i = 0, len = oldTemplate.children.length; i < len; i++) {
+    if (oldVTmpTree && oldVTmpTree.children.length !== 0) {
+      for (let i = 0, len = oldVTmpTree.children.length; i < len; i++) {
         if (
-          oldTemplate.children[i].isComponent &&
-          !oldTemplate.children[i].used
+          oldVTmpTree.children[i].isComponent &&
+          !oldVTmpTree.children[i].used
         ) {
-          oldTemplate.children[i].component.$destroy()
+          oldVTmpTree.children[i].component.$destroy()
         }
       }
     }
@@ -137,9 +143,9 @@ function deepClone (node) {
   return cloneNode
 }
 
-export default function getTree (newTemplate, oldTemplate) {
+export default function getVDomTree (newVTmpTree, oldVTmpTree) {
   let tree = null
-  if (!oldTemplate) tree = createTree(newTemplate)
-  else tree = changeTree(newTemplate, oldTemplate)
+  if (!oldVTmpTree) tree = createTree(newVTmpTree)
+  else tree = changeTree(newVTmpTree, oldVTmpTree)
   return deepClone(tree)
 }

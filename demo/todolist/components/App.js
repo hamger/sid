@@ -3,8 +3,17 @@ import TodoTask from './TodoTask'
 import NoTask from './NoTask'
 import Title from './Title'
 import TodoInput from './TodoInput'
-import View from '#/View.js'
+// import View from '#/View.js'
 
+// <a style="cursor:pointer;" onclick={this.jump.bind(this, '/page1')}>page1</a>
+// <a style="cursor:pointer;"
+//   onclick={() => {
+//     this.$router.push({ path: '/page2' })
+//   }}
+// >
+//   page2
+// </a>
+// <View />
 var app = new Seed({
   render (h) {
     return (
@@ -18,15 +27,6 @@ var app = new Seed({
           )}
         </div>
         <TodoInput placeholder={'记点什么'} />
-        <a style="cursor:pointer;" onclick={this.jump.bind(this, '/page1')}>page1</a>
-        <a style="cursor:pointer;"
-          onclick={() => {
-            this.$router.push({ path: '/page2' })
-          }}
-        >
-          page2
-        </a>
-        <View />
       </div>
     )
   },

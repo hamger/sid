@@ -1,5 +1,5 @@
 import Seed from '@'
-// let id = 0
+let id = 0
 export default Seed.extend({
   render (h) {
     return (
@@ -26,9 +26,9 @@ export default Seed.extend({
   },
   methods: {
     save () {
-      // this.$emit('addTodo', `hanger${id++}`)
-      this.$emit('addTodo', this.inputValue)
-      this.inputValue = ''
+      this.$emit('addTodo', `hanger${id++}`)
+      // this.$emit('addTodo', this.inputValue)
+      // this.inputValue = ''
     }
   }
 })
