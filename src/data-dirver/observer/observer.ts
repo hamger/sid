@@ -30,7 +30,7 @@ function defineReactive(object: Object, key: string, value: any) {
     enumerable: true,
     get: function() {
       if (Dep.target) {
-        // 添加 watcher 到 dep.subs，添加 dep 到 watcher.deps
+        // 添加 watcher 到 dep.watchers，添加 dep 到 watcher.deps
         dep.depend()
         if (childOb) {
           childOb.dep.depend()

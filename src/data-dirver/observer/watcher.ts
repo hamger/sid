@@ -1,4 +1,5 @@
 import Dep, { pushTarget, popTarget } from './dep'
+import { remove } from '../util/util'
 
 // 解析链式引用，parsePath(a.b.c) 返回一个函数 obj => obj.a.b.c
 const bailRE = /[^\w.$]/
@@ -16,10 +17,10 @@ export function parsePath(path: string) {
   }
 }
 
-let watcherId = 0
+let id = 0
 
 export default class Watcher {
-  watcherId: number
+  id: number
   dd: Object
   callback: Function
   dep: Array<Dep>
@@ -30,7 +31,7 @@ export default class Watcher {
   value: any
 
   constructor(dd: Object, expOrFn: string | Function, callback: Function) {
-    this.watcherId = watcherId++
+    this.id = id++
     this.dd = dd
     this.callback = callback
     this.dep = []
@@ -71,15 +72,15 @@ export default class Watcher {
 
   // 添加一个依赖
   addDep(dep: Dep) {
-    const id = dep.depId
+    const id = dep.id
     if (!this.newDepId.has(id)) {
       this.newDep.push(dep)
       this.newDepId.add(id)
       // 如果没 dep 有添加该 watcher 则添加之，防止重复添加
-      if (!this.depId.has(id)) dep.addSub(this)
+      if (!this.depId.has(id)) dep.addWatcher(this)
     }
     // this.dep.push(dep)
-    // dep.addSub(this)
+    // dep.addWatcher(this)
   }
 
   /**
@@ -89,8 +90,8 @@ export default class Watcher {
     let i = this.dep.length
     while (i--) {
       const dep = this.dep[i]
-      if (!this.newDepId.has(dep.depId)) {
-        dep.removeSub(this)
+      if (!this.newDepId.has(dep.id)) {
+        dep.removeWatcher(this)
       }
     }
     // 缓存将要被移除的 newDepId 和 newDep，减少之后的重复添加
@@ -106,10 +107,10 @@ export default class Watcher {
     this.newDep.length = 0
   }
 
-  // watcher 拆卸自己：通知 dep 移除我，dep 调用 dep.removeSub(watcher) 移除之
+  // watcher 拆卸自己：通知 dep 移除我，dep 调用 dep.removeWatcher(watcher) 移除之
   teardown() {
     let i = this.dep.length
-    while (i--) this.dep[i].removeSub(this)
+    while (i--) this.dep[i].removeWatcher(this)
     this.dep = []
   }
 }

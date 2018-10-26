@@ -53,13 +53,21 @@ export function toNumber (val: any) {
  * 将某项从数组中移除
  */
 export function remove (arr: Array<any>, item: any) {
-  if (arr.length) {
-    const index = arr.indexOf(item)
-    if (index > -1) {
-      return arr.splice(index, 1)
+  arr.some((element, index) => {
+    if (item.id === element.id) {
+      arr.splice(index, 1)
+      return true
     }
-  }
+  })
 }
+// export function remove (arr: Array<any>, item: any) {
+//   if (arr.length) {
+//     const index = arr.indexOf(item)
+//     if (index > -1) {
+//       return arr.splice(index, 1)
+//     }
+//   }
+// }
 
 /**
  * 检验对象本身是否有该属性
@@ -141,27 +149,23 @@ export const empty = () => {
  * 宽送地比较两个值是否相等，对象类型通过 JSON.stringify 转换再进行比较
  */
 export function looseEqual (a: any, b: any) {
-  /* eslint-disable eqeqeq */
   return (
     a == b ||
     (isObject(a) && isObject(b) ?
       JSON.stringify(a) === JSON.stringify(b) :
       false)
   )
-  /* eslint-enable eqeqeq */
 }
 
 /**
  * 宽送地比较是否为空值
  */
 export function isEmpty (a: any) {
-  /* eslint-disable eqeqeq */
   if (a == null ||
     JSON.stringify(a) === '{}' ||
     JSON.stringify(a) === '[]'
   ) return true
   else return false
-  /* eslint-enable eqeqeq */
 }
 
 /**
@@ -175,8 +179,8 @@ export function looseIndexOf (arr: Array<any>, val: any) {
 }
 
 /**
- * warn of Amus
+ * warn of Seed
  */
 export function warn (msg: any) {
-  console.error(`[Amus warn]: ${msg}`)
+  console.error(`[Seed warn]: ${msg}`)
 }

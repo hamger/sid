@@ -7,7 +7,7 @@ import DD from '.'
  * 代理配置项
  * @param dd
  */
-export default function initState (dd: DD) {
+export default function initState(dd: DD) {
   let opt = dd.$options
   // 观察并代理 data 属性中数据
   if (opt.data) initData(dd)
@@ -21,7 +21,7 @@ export default function initState (dd: DD) {
   if (opt.methods) initMethod(dd)
 }
 
-function initData (dd: DD) {
+function initData(dd: DD) {
   // let a = b = {} 的写法使得 a、b 指向同一个地址
   let data = (dd._data = dd.$options.data ? dd.$options.data.call(dd) : {})
   // 将 data 对象变成可监听结构
@@ -32,13 +32,12 @@ function initData (dd: DD) {
   }
 }
 
-function initProp (dd: DD) {
+function initProp(dd: DD) {
   // 标准化 dd.$options.props
   // normalizeProp(dd.$options)
   let props: any = (dd._props = {})
-  // 获取父组件传过来的数据
+  // 根据 props 中的 key 去 propData 中取值
   let propData = dd.$options.propData || {}
-  // 实际用到的值由子组件的 props 属性决定
   for (let key in dd.$options.props) {
     let value = propData[key]
     // console.log(dd.$options.props[key].type)
@@ -57,7 +56,7 @@ function initProp (dd: DD) {
   }
 }
 
-function initWatch (dd: DD) {
+function initWatch(dd: DD) {
   for (let key in dd.$options.watch) {
     let watch = new Watcher(
       dd,
@@ -70,11 +69,11 @@ function initWatch (dd: DD) {
         )
       }
     )
-    dd._watch.push(watch)
+    dd._watchers.push(watch)
   }
 }
 
-function initComputed (dd: DD) {
+function initComputed(dd: DD) {
   let computed: any = (dd._computed = {})
   // normalizeComputed(dd.$options)
   for (let key in dd.$options.computed) {
@@ -87,7 +86,7 @@ function initComputed (dd: DD) {
   }
 }
 
-function initMethod (dd: DD) {
+function initMethod(dd: DD) {
   for (let key in dd.$options.methods) {
     dd[key] = dd.$options.methods[key].bind(dd)
   }

@@ -1,24 +1,24 @@
 import { remove } from '../util/util'
 import Watcher from './watcher'
 
-let depId = 0
+let id = 0
 
 export default class Dep {
   static target?: Watcher
-  depId: number
-  subs: Array<Watcher>
+  id: number
+  watchers: Array<Watcher>
 
   constructor() {
-    this.depId = depId++
-    this.subs = []
+    this.id = id++
+    this.watchers = []
   }
 
-  addSub(sub: Watcher) {
-    this.subs.push(sub)
+  addWatcher(watcher: Watcher) {
+    this.watchers.push(watcher)
   }
 
-  removeSub(sub: Watcher) {
-    remove(this.subs, sub)
+  removeWatcher(watcher: Watcher) {
+    remove(this.watchers, watcher)
   }
 
   depend() {
@@ -28,8 +28,8 @@ export default class Dep {
   }
 
   notify() {
-    this.subs.forEach(sub => {
-      sub.update()
+    this.watchers.forEach(watcher => {
+      watcher.update()
     })
   }
 }

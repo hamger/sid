@@ -1,6 +1,6 @@
+import DDClass from '../instance'
 import { initExtend } from './extend'
 import { initUse } from './use'
-import DDClass from '../instance'
 import { initMixin } from './mixin'
 
 export function initClassApi (DD: typeof DDClass) {
