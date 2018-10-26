@@ -5,10 +5,7 @@ import { initMixin } from './mixin'
 
 export function initClassApi (DD: typeof DDClass) {
   // 设置初始 options
-  DD.options = {
-    components: {},
-    _base: DD
-  }
+  DD.options = {}
 
   // 子类生成方法
   initExtend(DD)

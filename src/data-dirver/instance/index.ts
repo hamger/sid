@@ -2,16 +2,14 @@ import event from './event'
 import Watcher from '../observer/watcher'
 import { isEmpty, looseEqual } from '../util/util'
 import { mergeOptions } from '../util/options'
-import initProps from './initProps'
 import initState from './initState'
 import { callHook } from './lifecycle'
 import initEvent from './initEvent'
-import { pushTarget, popTarget } from '../observer/dep'
 
-let ddId = 0
+let id = 0
 @event
 export default class DD {
-  ddId: number
+  id: number
   active: boolean
   $options?: any
   $parent: any
@@ -25,20 +23,26 @@ export default class DD {
   static extend: any
   static mixin: any
 
-  constructor(options: any) {
-    this.ddId = ddId++
+  constructor (options: any) {
+    this.id = id++
     this._init(options)
     this.active = true
   }
 
-  _init(options: any) {
+  _init (options: any) {
     let dd: DD = this
 
     // 合并 构造器(父组件)的配置项 和 输入的配置项
     var sub: any = this.constructor
+    console.log(sub.options)
     dd.$options = mergeOptions(sub.options, options)
 
-    initProps(dd)
+    let parent = dd.$options.parent
+    if (parent) parent.$children.push(dd)
+    dd.$parent = parent
+    dd.$root = parent ? parent.$root : dd
+    dd.$children = []
+    dd._watch = []
 
     // 触发 beforeCreate 事件
     callHook(dd, 'beforeCreate')
@@ -50,7 +54,7 @@ export default class DD {
 
   // 处理传入的 props ，当传入的组件的 props 有更新时
   // 需要调用该方法触发子组件状态更新
-  $initProp(props: any) {
+  $initProp (props: any) {
     if (isEmpty(props)) return
     // TODO 有效性验证
     let dd: DD = this
@@ -65,7 +69,7 @@ export default class DD {
   // 创建一个观察者，观察者会观察在 getter 中对属性的 get 的操作
   // 当对应属性发生 set 动作时，会触发 callback
   // 新生成的观察者对象会保存在实例的 _watch 属性下
-  $watch(getter: string | Function, callback: Function) {
+  $watch (getter: string | Function, callback: Function) {
     let dd: DD = this
     let watch = new Watcher(dd, getter, callback)
     dd._watch.push(watch)
@@ -74,7 +78,7 @@ export default class DD {
 
   // 用于取消特定的属性监听
   // 比如表单元素的 value 值，发生变化时是不需要引发视图变化的
-  $cancelWatch(watch?: Watcher) {
+  $cancelWatch (watch?: Watcher) {
     if (watch) {
       let i = watch.dep.length
       while (i--) {
@@ -92,7 +96,7 @@ export default class DD {
   }
 
   // 暴露销毁当前实例的方法
-  $destroy() {
+  $destroy () {
     if (this.active) {
       let dd = this
       callHook(dd, 'beforeDestroy')

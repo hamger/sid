@@ -16,7 +16,7 @@ export function initExtend (DD: typeof DDClass) {
    */
   DD.extend = function (extendOptions: Object = {}): Function {
     // this 指向父构造器
-    const Super = this
+    const Super = DD
     class Sub extends Super {
       constructor (options: any) {
         super(options)
