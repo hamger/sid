@@ -42,6 +42,9 @@ Seed.$mount(document.getElementById('app'), app)
 ```
 
 ## Changelog
+### 2018.10.26
+> v0.1.2 简化获取虚拟 dom 树的逻辑
+
 ### 2018.8.14
 > v0.1.1 更新 virtual-dom 结构
 

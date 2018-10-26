@@ -85,11 +85,11 @@ export default {
         var patches = diff(this.$vDomTree, vDomTree)
         this.$el = patch(this.$el, patches)
       }
-      this.$initDOMBind(this.$el, newVTmpTree)
       // 保存组件的虚拟模板树，作为下次 $patch 中的旧虚拟模板树
       this.$vTmpTree = newVTmpTree
       // 保存组件的虚拟dom树，作为下次 $patch 中的旧虚拟dom树
       this.$vDomTree = vDomTree
+      this.$initDOMBind(this.$el, newVTmpTree)
     }
 
     // 为某一组件下的所有子组件上设置 $el 属性，表示其对应的真实 dom，在执行 patch 方法时需要用到
