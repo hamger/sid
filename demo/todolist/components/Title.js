@@ -25,7 +25,10 @@ var title = {
       type: String,
       default: 'hello Title'
     }
-  }
+  },
+  // created () {
+  //   console.log('created')
+  // }
 }
 
 export default title

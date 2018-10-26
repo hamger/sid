@@ -34,7 +34,6 @@ export default class DD {
 
     // 合并 构造器(父组件)的配置项 和 输入的配置项
     var sub: any = this.constructor
-    console.log(sub.options)
     dd.$options = mergeOptions(sub.options, options)
 
     let parent = dd.$options.parent
