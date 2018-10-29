@@ -19,5 +19,5 @@ export function callHook (dd: DD, hook: string): void {
       handler[i].call(dd)
     }
   }
-  dd.$emit('hook:' + hook)
+  // dd.$emit('hook:' + hook)
 }

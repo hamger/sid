@@ -52,15 +52,15 @@ export default {
 
     // 将 jsx 转化为虚拟模板树，此时自定义标签还未解析
     DD.prototype.$h = function (tag, properties, ...children) {
-      // 将父组价传进去
-      var parent = this
-      return getVTmpNode(parent, tag, properties, ...children)
+      return getVTmpNode(this, tag, properties, ...children)
     }
 
     // 获取虚拟模板树，并对其进行监听
     DD.prototype.$getVTmpTree = function (prop) {
       let template = null
-      this.$initProp(prop)
+      // 检测父组件闯来的数据是否有更新
+      // this.$checkProps(prop)
+      // console.log(prop)
       // 建一个 watcher，观察对虚拟模板树的操作
       this.$watch(
         () => {
@@ -79,6 +79,7 @@ export default {
     DD.prototype.$patch = function (newVTmpTree) {
       // 将虚拟模板树转化为虚拟dom树，此时自定义标签被解析为html标签
       let vDomTree = getVDomTree(newVTmpTree)
+      // console.log(vDomTree)
       if (!this.$vDomTree) {
         this.$el = create(vDomTree)
       } else {

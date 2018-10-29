@@ -36,6 +36,12 @@ export default class DD {
     // 合并 构造函数的配置项 和 输入的配置项
     var sub: any = dd.constructor
     dd.$options = mergeOptions(sub.options, options)
+    let parent = dd.$options.parent
+    if (parent) {
+      parent.$children.push(dd)
+      dd.$parent = parent
+    }
+    // this.$checkProps(dd.$options.propsData)
 
     // 触发 beforeCreate 事件
     callHook(dd, 'beforeCreate')
@@ -45,20 +51,43 @@ export default class DD {
     initEvent(dd)
   }
 
-  $addChild(dd: DD) {
-    dd.$parent = this
-    this.$children.push(dd)
+
+  // 添加子实例
+  $addChild(Sub: typeof DD, propsData: any) {
+    const sub = new Sub({
+      parent: this,
+      propsData: propsData
+    })
+    for (let k in propsData) {
+      let key = k
+      if (k.charAt(0) === ':') key = k.substr(1)
+      // 组件接受哪些数据由组件自身的 props 属性决定
+      if (!sub.$options.props[key]) continue
+      // 添加监听，将父组件的变化映射到子组件中
+      if (k.charAt(0) === ':') {
+        new Watcher({}, () => {
+          return propsData[k].split('.').reduce((obj: any, name: string) => obj[name], this)
+        }, (val: any, oldVal: any) => {
+          sub[key] = val
+        })
+      } else {
+        sub[key] = propsData[k]
+      }
+    }
+    return sub
   }
 
-  // 处理传入的 props ，当传入的组件的 props 有更新时
-  // 需要调用该方法触发子组件状态更新
-  $initProp(props: any) {
-    if (isEmpty(props)) return
+  // 检查props属性是否更新，如果更新了就改变 dd[key]
+  $checkProps(propsData: any) {
+    if (isEmpty(propsData)) return
     // TODO 有效性验证
     let dd: DD = this
     for (let key in dd.$options.props) {
-      let value = props[key]
+      // 组件接受哪些数据由组件自身的 props 属性决定
+      let value = propsData[key]
+      // 如果没有传入的值，使用默认值
       if (!value) value = dd.$options.props[key].default
+      // 如果 dd[key] 和 propsData[key] 不相等，更新 dd[key] 的值，同时将触发 setter 访问器的回调
       if (!looseEqual(dd[key], value)) dd[key] = value
     }
   }

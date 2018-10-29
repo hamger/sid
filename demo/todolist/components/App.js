@@ -15,6 +15,14 @@ import TodoInput from './TodoInput'
 // </a>
 // <View />
 var app = new Seed({
+  data () {
+    return {
+      title: 'TodoList',
+      todoList: [],
+      inputValue: '',
+      noTaskInfo: '暂无 TodoList'
+    }
+  },
   render (h) {
     return (
       <div className="todo-wrap">
@@ -58,14 +66,6 @@ var app = new Seed({
       return this.todoList.length
     }
   },
-  data () {
-    return {
-      title: 'TodoList',
-      todoList: [],
-      inputValue: '',
-      noTaskInfo: '暂无 TodoList'
-    }
-  }
 })
 
 export default app

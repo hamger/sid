@@ -8,13 +8,11 @@ function createTree (template) {
     tree.children = template.children.map(vTmpNode => {
       let vDomNode = vTmpNode
       if (vTmpNode._constructor) {
-        // 保存组件的内容（seed实例）在 vTmpNode.component
-        vTmpNode.component = new vTmpNode._constructor({
-          propData: vTmpNode.properties
-        })
-        // 确定父子关系
-        vTmpNode.parent.$addChild(vTmpNode.component)
         // 传入父组件给子组件的属性 node.properties
+        vTmpNode.component = vTmpNode.parent.$addChild(
+          vTmpNode._constructor,
+          vTmpNode.properties
+        )
         // 得到组件的虚拟模板树，保存在 vTmpNode.component.$vTmpTree，在执行 $initDOMBind 时需要用到
         vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(
           vTmpNode.properties

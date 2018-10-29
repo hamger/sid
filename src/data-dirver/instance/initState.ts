@@ -40,7 +40,6 @@ function initProp(dd: DD) {
   let propData = dd.$options.propData || {}
   for (let key in dd.$options.props) {
     let value = propData[key]
-    // console.log(dd.$options.props[key].type)
     if (!value) value = dd.$options.props[key].default
     props[key] = value
   }
