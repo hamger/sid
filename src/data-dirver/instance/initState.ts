@@ -33,13 +33,12 @@ function initData(dd: DD) {
 }
 
 function initProp(dd: DD) {
-  // 标准化 dd.$options.props
-  // normalizeProp(dd.$options)
   let props: any = (dd._props = {})
-  // 根据 props 中的 key 去 propData 中取值
-  let propData = dd.$options.propData || {}
+  // 根据 props 中的 key 去 propsData 中取值
+  let propsData = dd.$options.propsData || {}
   for (let key in dd.$options.props) {
-    let value = propData[key]
+    let value = propsData[key]
+    // console.log(dd.$options.props[key].type)
     if (!value) value = dd.$options.props[key].default
     props[key] = value
   }
@@ -47,8 +46,8 @@ function initProp(dd: DD) {
   for (let key in dd._props) {
     // 把 dd.props 挂载在 dd，使得原来通过 dd.props.key 访问的数据，可以通过 dd.key 访问
     proxy(dd, '_props', key)
-    // 监听父元素的属性，当父组件的属性变化时，更新子组件的该属性
-    // 这也是 prop 属性名需要和父组件 data 中属性名同名的原因
+    // 监听父元素的属性，当父实例的属性变化时，更新子实例的该属性
+    // 这也是 prop 属性名需要和父实例 data 中属性名同名的原因
     new Watcher(dd.$parent, key, (newValue: any) => {
       dd[key] = newValue
     })
@@ -74,7 +73,6 @@ function initWatch(dd: DD) {
 
 function initComputed(dd: DD) {
   let computed: any = (dd._computed = {})
-  // normalizeComputed(dd.$options)
   for (let key in dd.$options.computed) {
     computed[key] = new Computed(dd, key, dd.$options.computed[key]).value
   }
@@ -88,5 +86,6 @@ function initComputed(dd: DD) {
 function initMethod(dd: DD) {
   for (let key in dd.$options.methods) {
     dd[key] = dd.$options.methods[key].bind(dd)
+    dd.$on(key, dd[key])
   }
 }

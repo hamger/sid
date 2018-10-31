@@ -2,7 +2,7 @@ import Watcher from './watcher'
 import { noop } from '../util/util'
 import DD from '../instance'
 
-let computedId = 0
+let id = 0
 
 interface ComputedOptions {
   get?(): any
@@ -10,7 +10,7 @@ interface ComputedOptions {
 }
 
 export default class Computed {
-  computedId: number
+  id: number
   dd: DD
   key: string
   option: ComputedOptions
@@ -19,7 +19,7 @@ export default class Computed {
   value: any
 
   constructor(dd: DD, key: string, option: ComputedOptions) {
-    this.computedId = computedId++
+    this.id = id++
     this.key = key
     this.option = option
     this.dd = dd

@@ -1,9 +1,10 @@
-import { empty, noop, isPlainObject } from './util'
+import { empty, noop } from './util'
 import { LIFECYCLE_HOOK } from '../instance/lifecycle'
 
+// 规范并合并配置项
 export function mergeOptions(parent: any = {}, child: any = {}) {
   
-  // 标准化部分特殊属性
+  // 规范部分特殊属性
   normalizeComputed(parent)
   normalizeComputed(child)
   normalizeProp(child)
@@ -33,13 +34,20 @@ export function mergeOptions(parent: any = {}, child: any = {}) {
   return options
 }
 
-function mergeData(parentValue: any = empty, childValue: any = empty) {
+function mergeData(parentVal: any = empty, childVal: any = empty) {
   return function() {
-    // parentValue / childValue 是函数
-    return Object.assign(parentValue.call(this), childValue.call(this))
+    // parentVal / childVal 是函数
+    return Object.assign(parentVal.call(this), childVal.call(this))
   }
 }
 
+/**
+ * 规范 computed 结构
+ * @param option
+ * return {
+ *   key: fn(val, oldVal)
+ * }
+ */
 function mergeWatch(parentVal: any = {}, childVal: any = {}) {
   let ret = Object.assign({}, parentVal)
   for (let key in childVal) {
@@ -58,7 +66,7 @@ function mergeWatch(parentVal: any = {}, childVal: any = {}) {
 }
 
 /**
- * 标准化 computed 结构
+ * 规范 computed 结构
  * @param option
  * return {
  *   key: {
@@ -81,7 +89,7 @@ export function normalizeComputed(option: any) {
 }
 
 /**
- * 标准化 prop 结构
+ * 规范 prop 结构
  * @param option
  * return {
  *   key: {
@@ -90,7 +98,6 @@ export function normalizeComputed(option: any) {
  *   }
  * }
  */
-
 export function normalizeProp(option: any) {
   if (!option.props) return
 
@@ -111,6 +118,13 @@ export function normalizeProp(option: any) {
   option.props = normalProps
 }
 
+/**
+ * 规范 生命周期 结构
+ * @param option
+ * return {
+ *   LIFECYCLE_HOOK_name: [fn]
+ * }
+ */
 export function normalizeLifecycle(option: any, name: string) {
   if (option[name] === undefined) {
     option[name] = []

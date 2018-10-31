@@ -53,7 +53,6 @@ function defineReactive(object: Object, key: string, value: any) {
 class Observer {
   value: any
   dep: Dep
-  vmCount: number
   constructor(value: any) {
     this.value = value
     this.dep = new Dep() // 支持 Observer 实例调用 dep 的方法

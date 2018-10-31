@@ -13,14 +13,10 @@ export default function evDecorator(DD: typeof DDClass) {
       // 处理事件名是数组的情况
       eventName.forEach(name => this.$on(name, fn))
     } else {
-      if (!Array.isArray(fn)) {
-        // 处理处理函数为数组的情况
-        fn = [fn]
-      }
+      // 将 fn 统一转化为数组来处理
+      if (!Array.isArray(fn)) fn = [fn]
       // 若 _events 对象下无对应事件名，则新建一个数组，然后将处理函数推入数组
-      ;(object._events[eventName] || (object._events[eventName] = [])).push(
-        ...fn
-      )
+      ;(object._events[eventName] || (object._events[eventName] = [])).push(...fn)
     }
     return object
   }

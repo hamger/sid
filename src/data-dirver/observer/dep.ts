@@ -1,5 +1,5 @@
-import { remove } from '../util/util'
 import Watcher from './watcher'
+import { remove } from '../util/util'
 
 let id = 0
 
@@ -37,6 +37,7 @@ export default class Dep {
 // targetStack 是为了防止监听嵌套结构时，丢失父辈 watcher
 const targetStack: Array<Watcher> = []
 
+// Dep.target 赋值为当前的渲染 watcher 并压栈（给之后的 popTarget() 使用 ）
 export function pushTarget(_target: Watcher) {
   if (Dep.target) targetStack.push(Dep.target)
   Dep.target = _target
