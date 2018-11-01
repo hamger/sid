@@ -78,7 +78,7 @@ export default {
     // 将虚拟模板树应用到真实的 dom
     DD.prototype.$patch = function (newVTmpTree) {
       // 将虚拟模板树转化为虚拟dom树，此时自定义标签被解析为html标签
-      let vDomTree = getVDomTree(newVTmpTree)
+      let vDomTree = getVDomTree(newVTmpTree, this.$vTmpTree)
       // console.log(vDomTree)
       if (!this.$vDomTree) {
         this.$el = create(vDomTree)
@@ -86,6 +86,8 @@ export default {
         var patches = diff(this.$vDomTree, vDomTree)
         this.$el = patch(this.$el, patches)
       }
+      // 保存组件的虚拟模板树，作为下次 $patch 中的旧虚拟模板树
+      this.$vTmpTree = newVTmpTree
       // 保存组件的虚拟dom树，作为下次 $patch 中的旧虚拟dom树
       this.$vDomTree = vDomTree
       this.$initDOMBind(this.$el, newVTmpTree)

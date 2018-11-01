@@ -32,6 +32,73 @@ function createTree (template) {
   return tree
 }
 
+function getOldComponent (list = [], cid) {
+  for (let i = 0, len = list.length; i < len; i++) {
+    if (
+      !list[i].used &&
+      list[i]._constructor &&
+      list[i]._constructor.cid === cid
+    ) {
+      list[i].used = true
+      return list[i].component
+    }
+  }
+}
+
+// 复用不变的一级子组件，不会递归遍历子组件，更细致的比较交给 diff 函数
+function changeTree (newTemplate, oldTemplate) {
+  let tree = Object.assign(new h(), newTemplate)
+  if (newTemplate.children.length) {
+    tree.children = newTemplate.children.map(vTmpNode => {
+      let vDomNode = vTmpNode
+      let isNewComponent = false
+      if (vTmpNode._constructor) {
+        vTmpNode.component = getOldComponent(
+          oldTemplate.children,
+          vTmpNode._constructor.cid
+        )
+        if (vTmpNode.component) {
+          // 复用旧模板，则通知子元素更新属性
+          vTmpNode.component.$updateProps(vTmpNode.properties)
+          // 得到组件的虚拟模板树
+          vDomNode = vTmpNode.component.$vTmpTree
+          // 保存组件实例在 vDomNode.component
+          vDomNode.component = vTmpNode.component
+        } else {
+          vTmpNode.component = vTmpNode.parent.$addChild(
+            vTmpNode._constructor,
+            vTmpNode.properties
+          )
+          vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(
+            vTmpNode.properties
+          )
+          vDomNode = vTmpNode.component.$vTmpTree
+          vDomNode.component = vTmpNode.component
+          isNewComponent = true
+        }
+      }
+      if (vDomNode.children && vDomNode.children.length) {
+        vDomNode = createTree(vDomNode)
+      }
+      if (isNewComponent) vTmpNode.component.$vTmpTree = vDomNode
+
+      return vDomNode
+    })
+    if (oldTemplate.children && oldTemplate.children.length) {
+      for (let i = 0, len = oldTemplate.children.length; i < len; i++) {
+        if (
+          oldTemplate.children[i]._constructor &&
+          !oldTemplate.children[i].used
+        ) {
+          // 销毁组件，触发生命周期
+          oldTemplate.children[i].component.$destroy()
+        }
+      }
+    }
+  }
+  return tree
+}
+
 // 复刻一份虚拟 dom 树
 function deepClone (node) {
   // 如果是文本节点则直接返回
@@ -45,8 +112,11 @@ function deepClone (node) {
   return cloneNode
 }
 
-export default function getVDomTree (newVTmpTree) {
-  let tree = createTree(newVTmpTree)
+export default function getVDomTree (newVTmpTree, oldVTmpTree) {
+  let tree = null
+  if (!oldVTmpTree) tree = createTree(newVTmpTree)
+  else tree = changeTree(newVTmpTree, oldVTmpTree)
+  // tree = createTree(newVTmpTree)
   // 返回虚拟 dom 树的复刻，避免引用类型赋值的影响
   return deepClone(tree)
 }

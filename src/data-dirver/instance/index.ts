@@ -1,6 +1,7 @@
 import event from './event'
 import Watcher from '../observer/watcher'
 import { mergeOptions } from '../util/options'
+import { isEmpty, looseEqual } from '../util/util'
 import initState from './initState'
 import { callHook } from './lifecycle'
 import initEvent from './initEvent'
@@ -48,6 +49,17 @@ export default class DD {
     // 触发 created 事件
     callHook(dd, 'created')
     initEvent(dd)
+  }
+
+  // 实例更新 props 
+  $updateProps(propsData: any) {
+    if (isEmpty(propsData)) return
+    let dd = this
+    for (let key in dd.$options.props) {
+      let value = propsData[key]
+      if (!value) value = dd.$options.props[key].default
+      if (!looseEqual(dd[key], value)) dd[key] = value
+    }
   }
 
   // 添加子实例
