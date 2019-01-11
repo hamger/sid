@@ -3,7 +3,7 @@ a simple front-end framework with mvc
 
 ## Usage
 ```js
-import Sid from '@'
+import Sid from 'hg-sid'
 
 var app = new Sid({
   render (h) {

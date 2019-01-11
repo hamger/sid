@@ -1,3 +1,4 @@
+import axios from 'axios'
 import Sid from '../../package/sid.min.js'
 
 var app = new Sid({
@@ -19,6 +20,15 @@ var app = new Sid({
     }
   },
   created () {
+    axios
+      .get('https://api.github.com')
+      .then(function (response) {
+        console.log(response)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+
     this.add('phone')
   },
   computed: {
