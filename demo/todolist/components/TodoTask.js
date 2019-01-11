@@ -1,7 +1,7 @@
-import Seed from '@'
+import sid from '@'
 
 // <div className="todo-item">
-let TodoTask = Seed.extend({
+let TodoTask = sid.extend({
   render (h) {
     return (
       <div key={this.task.id} className="todo-item">

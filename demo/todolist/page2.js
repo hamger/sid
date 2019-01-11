@@ -1,7 +1,7 @@
-import Seed from '@'
+import sid from '@'
 // import View from '../../router/View.js'
 
-export default Seed.extend({
+export default sid.extend({
   render (h) {
     return (
       <div>

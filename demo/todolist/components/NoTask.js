@@ -1,6 +1,6 @@
-import Seed from '@'
+import sid from '@'
 
-let NoTask = Seed.extend({
+let NoTask = sid.extend({
   render (h) {
     return <div className="no-task">{this.noTaskInfo}</div>
   },

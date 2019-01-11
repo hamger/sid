@@ -1,11 +1,11 @@
-# Seed
+# sid
 a front-end framework with mvc
 
 ## Usage
 ```js
-import Seed from '@'
+import sid from '@'
 
-var app = new Seed({
+var app = new Sid({
   render (h) {
     return (
       <div>
@@ -38,5 +38,5 @@ var app = new Seed({
   }
 })
 
-Seed.$mount(document.getElementById('app'), app)
+sid.$mount(document.getElementById('app'), app)
 ```

@@ -1,6 +1,6 @@
-import Seed from '@'
+import Sid from '../../package/sid.min.js'
 
-var app = new Seed({
+var app = new Sid({
   render (h) {
     return (
       <div>
@@ -33,4 +33,4 @@ var app = new Seed({
   }
 })
 
-Seed.$mount(document.getElementById('app'), app)
+Sid.$mount(document.getElementById('app'), app)

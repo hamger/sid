@@ -1,6 +1,6 @@
-import Seed from '@'
+import sid from '@'
 
-export default Seed.extend({
+export default sid.extend({
   render (h) {
     var Component = this.$route.route.component
     return (

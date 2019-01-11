@@ -60,6 +60,7 @@ export default class Watcher {
   // 添加监听，并取值
   get() {
     pushTarget(this)
+    // 对用到的属性进行监听
     const value = this.getter.call(this.obj, this.obj)
     popTarget()
     this.cleanupDeps()

@@ -1,11 +1,11 @@
-# Seed
+# sid
 a simple front-end framework with mvc
 
 ## Usage
 ```js
-import Seed from '@'
+import Sid from '@'
 
-var app = new Seed({
+var app = new Sid({
   render (h) {
     return (
       <div>
@@ -38,10 +38,14 @@ var app = new Seed({
   }
 })
 
-Seed.$mount(document.getElementById('app'), app)
+sid.$mount(document.getElementById('app'), app)
 ```
 
 ## Changelog
+### 2019.1.11
+
+> v0.1.3 项目名从 Seed 更名为 Sid
+
 ### 2018.10.26
 > v0.1.2 简化获取虚拟 dom 树的逻辑
 

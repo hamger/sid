@@ -1,6 +1,6 @@
-import Seed from '@'
+import sid from '@'
 
-var title = Seed.extend({
+var title = sid.extend({
   render (h) {
     return (
       <p className='title'>{this.title}</p>

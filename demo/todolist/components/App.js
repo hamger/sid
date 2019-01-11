@@ -1,4 +1,4 @@
-import Seed from '@'
+import Sid from '@'
 import TodoTask from './TodoTask'
 import NoTask from './NoTask'
 import Title from './Title'
@@ -14,7 +14,7 @@ import TodoInput from './TodoInput'
 //   page2
 // </a>
 // <View />
-var app = new Seed({
+var app = new Sid({
   render (h) {
     return (
       <div className="todo-wrap">

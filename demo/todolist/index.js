@@ -1,8 +1,8 @@
-import Seed from '@'
+import sid from '@'
 import App from './components/App'
 import './index.scss'
 import sRouter from '#'
 import router from './router.js'
-Seed.use(sRouter, router)
+sid.use(sRouter, router)
 // 挂载dom元素
-Seed.$mount(document.getElementById('app'), App)
+sid.$mount(document.getElementById('app'), App)
