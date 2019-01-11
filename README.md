@@ -1,6 +1,13 @@
 # sid
 a simple front-end framework with mvc
 
+
+## Install
+
+使用 npm 安装： `npm install hg-sid`
+
+使用 yarn 安装： `yarn add hg-sid`
+
 ## Usage
 ```js
 import Sid from 'hg-sid'
