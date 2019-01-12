@@ -14,9 +14,7 @@ function createTree (template) {
           vTmpNode.properties
         )
         // 得到组件的虚拟模板树，保存在 vTmpNode.component.$vTmpTree，在执行 $initDOMBind 时需要用到
-        vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(
-          vTmpNode.properties
-        )
+        vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree()
         // 得到组件的虚拟模板树
         vDomNode = vTmpNode.component.$vTmpTree
         // 保存组件实例在 vDomNode.component
@@ -69,9 +67,7 @@ function changeTree (newTemplate, oldTemplate) {
             vTmpNode._constructor,
             vTmpNode.properties
           )
-          vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree(
-            vTmpNode.properties
-          )
+          vTmpNode.component.$vTmpTree = vTmpNode.component.$getVTmpTree()
           vDomNode = vTmpNode.component.$vTmpTree
           vDomNode.component = vTmpNode.component
           isNewComponent = true

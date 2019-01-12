@@ -56,11 +56,8 @@ export default {
     }
 
     // 获取虚拟模板树，并对其进行监听
-    DD.prototype.$getVTmpTree = function (prop) {
+    DD.prototype.$getVTmpTree = function () {
       let template = null
-      // 检测父组件闯来的数据是否有更新
-      // this.$checkProps(prop)
-      // console.log(prop)
       // 建一个 watcher，观察对虚拟模板树的操作
       this.$watch(
         () => {
