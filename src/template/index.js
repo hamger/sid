@@ -27,7 +27,7 @@ export default {
        *    </div>
        *  )
        * }
-       * 先获取 {} 中变量的值，此时将会收集依赖，再经过 babel 将 jsx 转化为如下所示的函数
+       * 经过 babel 将 jsx 转化为如下所示的函数
        * render (h) {
        *  return (
        *    h('div', {class: "todo-wrap"}, [
@@ -39,7 +39,7 @@ export default {
        *    ])
        *  )
        * }
-       * 所以执行一次 render 函数，内部多次执行 $h()，即 getVTmpNode()
+       * 可见执行一次 render 函数，内部多次执行 $h()，即 getVTmpNode()
        * 因此最后返回的结果是一个表示 dom 结构的对象（含组件）
        * {tagName: "div", properties: {…}, children: Array(3)}
        * 此时的对象中依然存在自定义的标签，也就是 tanName 值是 Sub（一个构造器对象），姑且将这样的对象称之为虚拟模板树，
@@ -58,7 +58,7 @@ export default {
     // 获取虚拟模板树，并对其进行监听
     DD.prototype.$getVTmpTree = function () {
       let template = null
-      // 建一个 watcher，观察对虚拟模板树的操作
+      // 建一个 watcher，观察整颗虚拟模板树
       this.$watch(
         () => {
           template = this.render.call(this)
