@@ -1,9 +1,9 @@
-# sid
+# hg-sid
 a front-end framework with mvc
 
 ## Usage
 ```js
-import sid from '@'
+import Sid from '@'
 
 var app = new Sid({
   render (h) {
@@ -38,5 +38,5 @@ var app = new Sid({
   }
 })
 
-sid.$mount(document.getElementById('app'), app)
+app.$mount(document.getElementById('app'))
 ```

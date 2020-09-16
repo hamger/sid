@@ -1,6 +1,6 @@
-import sid from '@'
+import Sid from '@'
 
-export default sid.extend({
+export default Sid.extend({
   render (h) {
     var Component = this.$route.route.component
     return (

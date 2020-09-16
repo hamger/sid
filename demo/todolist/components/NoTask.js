@@ -1,6 +1,6 @@
-import sid from '@'
+import Sid from '@'
 
-let NoTask = sid.extend({
+let NoTask = Sid.extend({
   render (h) {
     return <div className="no-task">{this.noTaskInfo}</div>
   },

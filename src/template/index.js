@@ -4,12 +4,12 @@ import { diff, patch, create } from '../virtual-dom'
 
 export default {
   install (DD) {
-    DD.$mount = function (el, dd) {
+    DD.prototype.$mount = function (el) {
       // 获取虚拟模板树
-      let template = dd.$getVTmpTree()
+      let template = this.$getVTmpTree()
       // 获得虚拟dom树，并转化为真实 dom 元素挂载在 $el 属性
-      dd.$patch(template)
-      el.appendChild(dd.$el)
+      this.$patch(template)
+      el.appendChild(this.$el)
     }
 
     // 在实例作用域下执行实例的 render 函数

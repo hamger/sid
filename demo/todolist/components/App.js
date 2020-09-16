@@ -14,7 +14,7 @@ import TodoInput from './TodoInput'
 //   page2
 // </a>
 // <View />
-var app = new Sid({
+export default new Sid({
   render (h) {
     return (
       <div className="todo-wrap">
@@ -67,5 +67,3 @@ var app = new Sid({
     }
   }
 })
-
-export default app

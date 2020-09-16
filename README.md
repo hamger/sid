@@ -1,4 +1,4 @@
-# sid
+# hg-sid
 a simple front-end framework with mvc
 
 
@@ -45,7 +45,7 @@ var app = new Sid({
   }
 })
 
-sid.$mount(document.getElementById('app'), app)
+app.$mount(document.getElementById('app'))
 ```
 
 ## Changelog

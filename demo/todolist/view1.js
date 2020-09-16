@@ -1,6 +1,6 @@
-import sid from '@'
+import Sid from '@'
 import Title from './components/Title'
-export default sid.extend({
+export default Sid.extend({
   render (h) {
     return (
       <div>

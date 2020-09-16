@@ -1,6 +1,6 @@
-import sid from '@'
+import Sid from '@'
 
-var title = sid.extend({
+var title = Sid.extend({
   render (h) {
     return (
       <p className='title'>{this.title}</p>

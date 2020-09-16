@@ -1,8 +1,8 @@
-import sid from '@'
+import Sid from '@'
 import App from './components/App'
 import './index.scss'
 import sRouter from '#'
 import router from './router.js'
-sid.use(sRouter, router)
+Sid.use(sRouter, router)
 // 挂载dom元素
-sid.$mount(document.getElementById('app'), App)
+App.$mount(document.getElementById('app'))

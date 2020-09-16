@@ -1,6 +1,6 @@
-import sid from '@'
+import Sid from '@'
 // let id = 0
-export default sid.extend({
+export default Sid.extend({
   render (h) {
     return (
       <div className="input-wrap">

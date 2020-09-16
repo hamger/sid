@@ -1,7 +1,7 @@
-import sid from '@'
+import Sid from '@'
 // import View from '../../router/View.js'
 
-export default sid.extend({
+export default Sid.extend({
   render (h) {
     return (
       <div>
